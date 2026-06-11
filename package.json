@@ -1,0 +1,32 @@
+{
+  "name": "redis-kafka",
+  "version": "0.0.2",
+  "description": "Lightweight event bus for Node.js microservices powered by Redis Streams.",
+  "main": "index.js",
+  "files": [
+    "index.js"
+  ],
+  "scripts": {
+    "build": "tsup"
+  },
+  "keywords": [
+    "redis",
+    "streams",
+    "event-bus",
+    "microservices",
+    "kafka",
+    "pubsub"
+  ],
+  "author": "",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "peerDependencies": {
+    "ioredis": ">=5.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
