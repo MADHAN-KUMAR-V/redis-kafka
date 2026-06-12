@@ -1,1 +1,15 @@
+export interface Event_Bus_Options {
+  url: string;
+}
 
+export interface Publish_Options {}
+
+export interface Subscribe_Options {}
+
+export type Event_Handler<T = unknown> = (payload: T) => Promise<void>;
+
+export interface Redis_Message {
+  event: string;
+  payload: unknown;
+  timestamp: number;
+}
