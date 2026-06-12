@@ -2,12 +2,25 @@
   "name": "redis-kafka",
   "version": "0.0.3",
   "description": "Lightweight event bus for Node.js microservices powered by Redis Streams.",
-  "main": "index.js",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "require": "./dist/index.js",
+      "import": "./dist/index.mjs"
+    }
+  },
   "files": [
-    "index.js"
+    "dist"
   ],
   "scripts": {
-    "build": "tsup"
+    "build": "tsup src/index.ts --format cjs,esm --dts",
+    "push": "git push origin main",
+    "release:patch": "npm version patch && git push origin main --tags",
+    "release:minor": "npm version minor && git push origin main --tags",
+    "release:major": "npm version major && git push origin main --tags"
   },
   "keywords": [
     "redis",
@@ -15,18 +28,23 @@
     "event-bus",
     "microservices",
     "kafka",
-    "pubsub"
+    "pubsub",
+    "redis-kafka"
   ],
-  "author": "",
+  "author": "Madhan Kumar",
   "license": "MIT",
   "repository": {
     "type": "git",
     "url": "https://github.com/MADHAN-KUMAR-V/redis-kafka.git"
   },
   "peerDependencies": {
-    "ioredis": ">=5.0.0"
+    "ioredis": "^5.11.1"
   },
   "engines": {
     "node": ">=18.0.0"
+  },
+  "devDependencies": {
+    "tsup": "^8.5.1",
+    "typescript": "^5.9.3"
   }
 }
