@@ -13,4 +13,9 @@ export class Event_Bus {
   async group(name: string): Promise<Event_Group> {
     return Event_Group.create(name, this.redis, STREAM_NAME);
   }
+
+  // Call this when your app is shutting down to close the Redis connection cleanly.
+  async disconnect(): Promise<void> {
+    await this.redis.quit();
+  }
 }
