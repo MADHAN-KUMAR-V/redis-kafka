@@ -11,12 +11,14 @@ export class Event_Group {
     private name: string,
     private redis: Redis,
     private stream: string,
+    private maxlen: number | undefined,
   ) {}
 
   static async create(
     name: string,
     redis: Redis,
     stream: string,
+    maxlen?: number,
   ): Promise<Event_Group> {
     try {
       await redis.xgroup("CREATE", stream, name, "$", "MKSTREAM");
@@ -24,7 +26,7 @@ export class Event_Group {
       if (!(err instanceof Error && err.message.includes("BUSYGROUP")))
         throw err;
     }
-    return new Event_Group(name, redis, stream);
+    return new Event_Group(name, redis, stream, maxlen);
   }
 
   async publish(
@@ -32,16 +34,24 @@ export class Event_Group {
     payload: unknown,
     _options?: Publish_Options,
   ): Promise<void> {
-    await this.redis.xadd(
-      this.stream,
-      "*",
-      "event",
-      event,
-      "payload",
-      JSON.stringify(payload),
-      "timestamp",
-      Date.now().toString(),
-    );
+    if (this.maxlen) {
+      await this.redis.xadd(
+        this.stream,
+        "MAXLEN", "~", this.maxlen,
+        "*",
+        "event",     event,
+        "payload",   JSON.stringify(payload),
+        "timestamp", Date.now().toString(),
+      );
+    } else {
+      await this.redis.xadd(
+        this.stream,
+        "*",
+        "event",     event,
+        "payload",   JSON.stringify(payload),
+        "timestamp", Date.now().toString(),
+      );
+    }
   }
 
   async subscribe<T = unknown>(

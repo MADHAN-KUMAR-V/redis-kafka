@@ -5,13 +5,15 @@ import type { Event_Bus_Options } from "./types";
 
 export class Event_Bus {
   private redis: Redis;
+  private maxlen: number | undefined;
 
   constructor(options: Event_Bus_Options) {
-    this.redis = new Redis(options.url);
+    this.redis  = new Redis(options.url);
+    this.maxlen = options.maxlen;
   }
 
   async group(name: string): Promise<Event_Group> {
-    return Event_Group.create(name, this.redis, STREAM_NAME);
+    return Event_Group.create(name, this.redis, STREAM_NAME, this.maxlen);
   }
 
   async ping(): Promise<boolean> {

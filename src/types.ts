@@ -1,5 +1,6 @@
 export interface Event_Bus_Options {
   url: string;
+  maxlen?: number;
 }
 
 export interface Publish_Options {}
