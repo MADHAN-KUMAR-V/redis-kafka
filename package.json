@@ -1,6 +1,6 @@
 {
   "name": "redis-kafka",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Lightweight event bus for Node.js microservices powered by Redis Streams.",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
