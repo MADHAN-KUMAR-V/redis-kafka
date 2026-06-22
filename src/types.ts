@@ -5,7 +5,9 @@ export interface Event_Bus_Options {
 
 export interface Publish_Options {}
 
-export interface Subscribe_Options {}
+export interface Subscribe_Options {
+  onError?: (err: unknown) => void;
+}
 
 export type Event_Handler<T = unknown> = (payload: T) => Promise<void>;
 

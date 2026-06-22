@@ -57,9 +57,10 @@ export class Event_Group {
   async subscribe<T = unknown>(
     event: string,
     handler: Event_Handler<T>,
-    _options?: Subscribe_Options,
+    options?: Subscribe_Options,
   ): Promise<void> {
     const consumer = `${this.name}-${process.pid}`;
+    const on_error = options?.onError ?? console.error;
 
     const poll = async () => {
       while (true) {
@@ -80,13 +81,15 @@ export class Event_Group {
 
         for (const [, messages] of results) {
           for (const [id, fields] of messages) {
-            const msg_event = fields[fields.indexOf("event") + 1];
-            const msg_payload = JSON.parse(
-              fields[fields.indexOf("payload") + 1],
-            );
+            const msg_event   = fields[fields.indexOf("event") + 1];
+            const msg_payload = JSON.parse(fields[fields.indexOf("payload") + 1]);
 
             if (msg_event === event) {
-              await handler(msg_payload as T);
+              try {
+                await handler(msg_payload as T);
+              } catch (err) {
+                on_error(err);
+              }
             }
 
             await this.redis.xack(this.stream, this.name, id);
@@ -95,6 +98,6 @@ export class Event_Group {
       }
     };
 
-    poll().catch(console.error);
+    poll().catch(on_error);
   }
 }

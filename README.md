@@ -38,6 +38,19 @@ await profile.subscribe("user.registered", async (payload) => {
 });
 ```
 
+## Error handling
+
+By default subscriber errors are printed to `console.error`. Use `onError` to
+route them to your own logger or alerting system.
+
+```typescript
+await mail.subscribe("user.registered", async (payload) => {
+  console.log("send welcome email to", payload.email);
+}, {
+  onError: (err) => console.error("mail subscriber failed", err),
+});
+```
+
 ## Stream trimming
 
 By default the Redis stream grows without limit. Set `maxlen` to automatically
@@ -127,10 +140,14 @@ Closes the Redis connection cleanly.
 
 Sends an event into the stream. All subscriber groups receive it independently.
 
-### `group.subscribe(event, handler)`
+### `group.subscribe(event, handler, options?)`
 
 Starts listening for a specific event in the background. Handler is called for
 every matching message.
+
+| Option | Type | Description |
+|---|---|---|
+| `onError` | `(err: unknown) => void` | Called when the handler throws or the poll loop fails. Defaults to `console.error`. |
 
 ## Requirements
 
